@@ -1,6 +1,18 @@
 <template>
   <layout-content :header="$t('commons.form.detail')" :back-to="{name: 'Deployments'}" v-loading="loading">
     <div v-if="!yamlShow">
+      <div style="margin-bottom: 20px">
+        <el-button type="primary" size="small" icon="el-icon-edit"
+          v-has-permissions="{scope:'namespace',apiGroup:'apps',resource:'deployments',verb:'update'}"
+          @click="onEdit">
+          {{ $t("commons.button.edit") }}
+        </el-button>
+        <el-button type="primary" size="small" icon="el-icon-edit"
+          v-has-permissions="{scope:'namespace',apiGroup:'apps',resource:'deployments',verb:'update'}"
+          @click="onEditYaml">
+          {{ $t("commons.button.edit_yaml") }}
+        </el-button>
+      </div>
       <el-row :gutter="20" class="row-box">
         <el-col :span="12">
           <el-card class="el-card">
@@ -113,6 +125,20 @@ export default {
     },
   },
   methods: {
+    onEdit() {
+      this.$router.push({
+        name: "DeploymentEdit",
+        params: { operation: "edit", namespace: this.namespace, name: this.name },
+        query: { yamlShow: false },
+      })
+    },
+    onEditYaml() {
+      this.$router.push({
+        name: "DeploymentEdit",
+        params: { operation: "edit", namespace: this.namespace, name: this.name },
+        query: { yamlShow: true },
+      })
+    },
     getDetail() {
       this.clusterName = this.$route.query.cluster
       this.loading = true

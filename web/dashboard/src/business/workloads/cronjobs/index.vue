@@ -173,6 +173,15 @@ export default {
       if (resetPage) {
         this.paginationConfig.currentPage = 1
       }
+      const query = { ...this.$route.query }
+      if (this.searchConfig.keywords) {
+        query.keywords = this.searchConfig.keywords
+      } else {
+        delete query.keywords
+      }
+      if (JSON.stringify(query) !== JSON.stringify(this.$route.query)) {
+        this.$router.replace({ query })
+      }
       if(!this.isFullTextSearch){
         listWorkLoads(this.clusterName, "cronjobs", true, this.searchConfig.keywords, this.paginationConfig.currentPage, this.paginationConfig.pageSize)
         .then((res) => {
@@ -199,6 +208,9 @@ export default {
   },
   mounted () {
     this.clusterName = this.$route.query.cluster
+    if (this.$route.query.keywords) {
+      this.searchConfig.keywords = this.$route.query.keywords
+    }
     this.search()
   },
 }

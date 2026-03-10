@@ -1,6 +1,18 @@
 <template>
   <layout-content :header="$t('commons.form.detail')" :back-to="{name: 'CronJobs'}" v-loading="loading">
     <div v-if="!yamlShow">
+      <div style="margin-bottom: 20px">
+        <el-button type="primary" size="small" icon="el-icon-edit"
+          v-has-permissions="{scope:'namespace',apiGroup:'batch',resource:'cronjobs',verb:'update'}"
+          @click="onEdit">
+          {{ $t("commons.button.edit") }}
+        </el-button>
+        <el-button type="primary" size="small" icon="el-icon-edit"
+          v-has-permissions="{scope:'namespace',apiGroup:'batch',resource:'cronjobs',verb:'update'}"
+          @click="onEditYaml">
+          {{ $t("commons.button.edit_yaml") }}
+        </el-button>
+      </div>
       <el-row class="row-box">
         <el-card class="el-card">
           <ko-detail-basic :item="form" :yaml-show.sync="yamlShow"></ko-detail-basic>
@@ -118,6 +130,20 @@ export default {
     },
   },
   methods: {
+    onEdit() {
+      this.$router.push({
+        name: "CronJobEdit",
+        params: { operation: "edit", namespace: this.namespace, name: this.name },
+        query: { yamlShow: false },
+      })
+    },
+    onEditYaml() {
+      this.$router.push({
+        name: "CronJobEdit",
+        params: { operation: "edit", namespace: this.namespace, name: this.name },
+        query: { yamlShow: true },
+      })
+    },
     getDetail() {
       this.loading = true
       this.events = []
